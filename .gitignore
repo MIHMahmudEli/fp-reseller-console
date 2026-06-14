@@ -1,0 +1,26 @@
+# Secrets — never commit the API key
+.env
+.env.local
+.env*.local
+
+# API exploration output (may contain account data)
+.api-samples/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Local tooling / editor
+.claude/
+.vscode/
+.idea/
+
+# Misc
+.DS_Store
+*.log
