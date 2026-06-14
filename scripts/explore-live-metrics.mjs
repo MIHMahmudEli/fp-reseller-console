@@ -82,16 +82,6 @@ function preview(body) {
   return s.length > 2200 ? s.slice(0, 2200) + "\n  …(truncated)" : s;
 }
 
-/** Heuristic: does a metrics response actually contain data points? */
-function looksEmpty(passBucket) {
-  const vals = Object.values(passBucket);
-  const ok = vals.filter((v) => v.status >= 200 && v.status < 300);
-  if (ok.length === 0) return true;
-  // empty if no OK response carries a non-empty array anywhere in its body
-  const hasPoints = ok.some((v) => JSON.stringify(v.body).match(/\[\s*\{/));
-  return !hasPoints;
-}
-
 /** Send a little traffic through the proxy creds to populate metrics. */
 async function generateTraffic(conn) {
   const proxy = `http://${conn.proxy_username}:${conn.proxy_password}@${conn.connection.hostname}:${conn.connection.port_http}`;
