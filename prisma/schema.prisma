@@ -1,0 +1,51 @@
+// Prisma schema — Supabase Postgres.
+// Runtime uses the pooled connection (DATABASE_URL); migrations use DIRECT_URL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// A reseller is identified by the SHA-256 hash of their API key.
+/// The raw key is NEVER stored — only ever held in the encrypted session cookie.
+model Reseller {
+  id        String   @id @default(cuid())
+  keyHash   String   @unique
+  /// Display-only hint, e.g. "…a1b2" (last 4 of the key). Not sensitive.
+  label     String?
+  /// Snapshot of balance at last login, for quick admin context.
+  lastBalanceCents Int?
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @updatedAt
+
+  auditLogs AuditLog[]
+
+  @@map("resellers")
+}
+
+/// Append-only audit trail of logins and actions.
+model AuditLog {
+  id         String  @id @default(cuid())
+  reseller   Reseller @relation(fields: [resellerId], references: [id], onDelete: Cascade)
+  resellerId String
+
+  /// e.g. login_success, login_failure, logout, view_balance, view_plan, view_metrics
+  event     String
+  method    String?
+  path      String?
+  /// Upstream FlashProxy HTTP status (when the event proxied a call).
+  status    Int?
+  ip        String?
+  userAgent String?
+  /// Small structured context (planId, productType, etc.). No secrets.
+  metadata  Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([resellerId, createdAt])
+  @@index([event, createdAt])
+  @@map("audit_logs")
+}
