@@ -8,6 +8,7 @@ import { apiPost } from "@/lib/fetcher";
 const NAV = [
   { href: "/dashboard", label: "Overview" },
   { href: "/plans", label: "Plans" },
+  { href: "/billing", label: "Billing" },
 ];
 
 export function AppHeader({ label }: { label: string }) {

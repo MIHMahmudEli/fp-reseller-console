@@ -8,6 +8,7 @@ export type AuditEvent =
   | "logout"
   | "view_balance"
   | "view_transactions"
+  | "view_pricing"
   | "view_usage"
   | "view_plans"
   | "view_plan"
