@@ -154,6 +154,11 @@ export class FlashProxyClient {
       `/plans/${enc(planId)}/metrics/hourly-usage?hours=${hours}`,
     );
   }
+  getErrorMessages(planId: string, hours = 24) {
+    return this.get<{ hours: number; messages: unknown[] }>(
+      `/plans/${enc(planId)}/metrics/error-messages?hours=${hours}`,
+    );
+  }
 }
 
 const enc = encodeURIComponent;
