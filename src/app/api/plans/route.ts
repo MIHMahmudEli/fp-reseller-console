@@ -1,5 +1,5 @@
 import { authedGet } from "@/lib/route-helpers";
 
 export function GET() {
-  return authedGet("view_balance", "/api/balance", (c) => c.getBalance());
+  return authedGet("view_plans", "/api/plans", (c) => c.getPlans());
 }
