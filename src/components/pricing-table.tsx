@@ -1,15 +1,17 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { Tags } from "lucide-react";
 import { apiGet } from "@/lib/fetcher";
 import { productLabel } from "@/lib/format";
+import { Card, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Pricing {
   currency: string;
   products: Record<string, unknown>;
 }
 
-/** Best-effort price summary across the varied product pricing shapes. */
 function priceSummary(value: unknown): { price: string; kind: string } {
   const v = (value ?? {}) as Record<string, unknown>;
   const type = typeof v.type === "string" ? v.type : "";
@@ -27,18 +29,18 @@ function priceSummary(value: unknown): { price: string; kind: string } {
   return { price: "—", kind: type || "custom" };
 }
 
-export function PricingTable() {
+export function PricingTable({ delay }: { delay?: number }) {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["pricing"],
     queryFn: () => apiGet<Pricing>("/api/balance/pricing"),
   });
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-5">
-      <h2 className="text-sm font-medium text-slate-500">Your pricing</h2>
+    <Card className="p-5" delay={delay}>
+      <CardHeader title="Your pricing" icon={<Tags className="h-4 w-4" />} />
 
       {isLoading ? (
-        <div className="mt-4 h-32 animate-pulse rounded bg-slate-100" />
+        <Skeleton className="mt-4 h-32 w-full" />
       ) : isError ? (
         <p className="mt-3 text-sm text-red-600">
           {(error as Error)?.message ?? "Failed to load pricing"}
@@ -50,7 +52,7 @@ export function PricingTable() {
             return (
               <div
                 key={product}
-                className="flex items-center justify-between rounded-lg border border-slate-100 px-3 py-2"
+                className="flex items-center justify-between rounded-xl border border-slate-100 px-3 py-2 transition-colors hover:bg-slate-50"
               >
                 <div>
                   <div className="text-sm font-medium text-slate-800">
@@ -64,6 +66,6 @@ export function PricingTable() {
           })}
         </div>
       )}
-    </section>
+    </Card>
   );
 }

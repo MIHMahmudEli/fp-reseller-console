@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft, BarChart3, Gauge, Plug } from "lucide-react";
 import { apiGet } from "@/lib/fetcher";
 import { CopyField } from "@/components/copy-field";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate, formatGB, productLabel, statusClasses } from "@/lib/format";
 import {
   METRICS_SUPPORTED_PRODUCTS,
@@ -26,11 +31,11 @@ export function PlanDetail({ planId }: { planId: string }) {
   });
 
   if (planQ.isLoading) {
-    return <div className="h-64 animate-pulse rounded-xl bg-slate-100" />;
+    return <Skeleton className="h-64 w-full rounded-2xl" />;
   }
   if (planQ.isError) {
     return (
-      <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+      <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
         {(planQ.error as Error)?.message ?? "Failed to load plan"}
       </p>
     );
@@ -42,36 +47,36 @@ export function PlanDetail({ planId }: { planId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="animate-fade-in-up flex flex-wrap items-start justify-between gap-3">
         <div>
-          <Link href="/plans" className="text-sm text-slate-500 hover:underline">
-            ← Plans
+          <Link
+            href="/plans"
+            className="inline-flex items-center gap-1 text-sm text-slate-500 transition-colors hover:text-slate-900"
+          >
+            <ArrowLeft className="h-4 w-4" /> Plans
           </Link>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
             {productLabel(plan.product)}
           </h1>
           <p className="font-mono text-xs text-slate-400">{plan.plan_id}</p>
         </div>
-        <span
-          className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ring-1 ring-inset ${statusClasses(plan.status)}`}
-        >
+        <Badge className={`${statusClasses(plan.status)} px-3 py-1 text-sm`}>
           {plan.status}
-        </span>
+        </Badge>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Usage */}
-        <section className="rounded-xl border border-slate-200 bg-white p-6">
-          <h2 className="text-sm font-medium text-slate-500">Bandwidth usage</h2>
+        <Card className="p-6" delay={60}>
+          <CardHeader title="Bandwidth usage" icon={<Gauge className="h-4 w-4" />} />
           <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-2xl font-semibold">
+            <span className="text-2xl font-semibold tabular-nums text-slate-900">
               {formatGB((usage?.gb_used ?? plan.limits.bytes_used / 1e9) || 0)}
             </span>
             <span className="text-sm text-slate-500">of {plan.limits.max_gb} GB</span>
           </div>
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
             <div
-              className="h-full rounded-full bg-slate-900"
+              className="h-full rounded-full bg-brand-600 transition-all duration-500"
               style={{ width: `${Math.min(100, pct)}%` }}
             />
           </div>
@@ -84,11 +89,10 @@ export function PlanDetail({ planId }: { planId: string }) {
             <Fact label="Expires" value={formatDate(plan.expires_at)} />
             <Fact label="Created" value={formatDate(plan.created_at)} />
           </dl>
-        </section>
+        </Card>
 
-        {/* Connection */}
-        <section className="rounded-xl border border-slate-200 bg-white p-6">
-          <h2 className="text-sm font-medium text-slate-500">Connection</h2>
+        <Card className="p-6" delay={120}>
+          <CardHeader title="Connection" icon={<Plug className="h-4 w-4" />} />
           <div className="mt-3 space-y-3">
             <CopyField label="Proxy string" value={plan.connection.format} />
             <div className="grid grid-cols-2 gap-3">
@@ -101,14 +105,16 @@ export function PlanDetail({ planId }: { planId: string }) {
             <CopyField label="Username" value={plan.proxy_username} />
             <CopyField label="Password" value={plan.proxy_password} secret />
           </div>
-        </section>
+        </Card>
       </div>
 
-      {/* Performance metrics entry point */}
-      <section className="rounded-xl border border-slate-200 bg-white p-6">
-        <div className="flex items-center justify-between">
+      <Card className="p-6" delay={180}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-sm font-medium text-slate-700">Performance metrics</h2>
+            <div className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-slate-400" />
+              <h2 className="text-sm font-medium text-slate-700">Performance metrics</h2>
+            </div>
             <p className="mt-1 text-sm text-slate-500">
               {metricsSupported(plan.product)
                 ? "Throughput, latency, errors, status codes and top destinations."
@@ -116,15 +122,12 @@ export function PlanDetail({ planId }: { planId: string }) {
             </p>
           </div>
           {metricsSupported(plan.product) && (
-            <Link
-              href={`/plans/${plan.plan_id}/metrics`}
-              className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800"
-            >
-              View metrics →
+            <Link href={`/plans/${plan.plan_id}/metrics`}>
+              <Button size="sm">View metrics</Button>
             </Link>
           )}
         </div>
-      </section>
+      </Card>
     </div>
   );
 }

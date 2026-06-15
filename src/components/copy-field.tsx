@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Check, Copy, Eye, EyeOff } from "lucide-react";
 
-/** A monospace value with a copy button; optionally masked (for secrets). */
 export function CopyField({
   label,
   value,
@@ -27,22 +27,28 @@ export function CopyField({
         {label}
       </div>
       <div className="mt-1 flex items-center gap-2">
-        <code className="flex-1 truncate rounded-md bg-slate-50 px-2 py-1.5 font-mono text-sm text-slate-800">
+        <code className="flex-1 truncate rounded-lg bg-slate-50 px-3 py-2 font-mono text-sm text-slate-800">
           {revealed ? value : "•".repeat(Math.min(value.length, 16))}
         </code>
         {secret && (
           <button
             onClick={() => setRevealed((r) => !r)}
-            className="rounded-md border border-slate-200 px-2 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+            className="rounded-lg border border-slate-200 p-2 text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
+            aria-label={revealed ? "Hide" : "Show"}
           >
-            {revealed ? "Hide" : "Show"}
+            {revealed ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         )}
         <button
           onClick={copy}
-          className="rounded-md border border-slate-200 px-2 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+          className="rounded-lg border border-slate-200 p-2 text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
+          aria-label="Copy"
         >
-          {copied ? "Copied" : "Copy"}
+          {copied ? (
+            <Check className="h-4 w-4 text-emerald-600" />
+          ) : (
+            <Copy className="h-4 w-4" />
+          )}
         </button>
       </div>
     </div>

@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft } from "lucide-react";
 import {
   Area,
   AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
   Legend,
   Line,
   LineChart,
@@ -20,6 +20,10 @@ import {
 } from "recharts";
 import { apiGet } from "@/lib/fetcher";
 import { formatGB, productLabel } from "@/lib/format";
+import { AXIS, COLORS, tooltipStyle } from "@/lib/chart";
+import { cn } from "@/lib/cn";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   METRICS_SUPPORTED_PRODUCTS,
   type Destination,
@@ -43,7 +47,6 @@ function metricsSupported(product: string): boolean {
 }
 
 function tick(bucket: string): string {
-  // "2026-06-14 17:36:00" -> "06-14 17:36"
   return bucket?.length >= 16 ? bucket.slice(5, 16) : bucket;
 }
 
@@ -73,28 +76,30 @@ export function MetricsView({ planId }: { planId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="animate-fade-in-up flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Link href={`/plans/${planId}`} className="text-sm text-slate-500 hover:underline">
-            ← Back to plan
+          <Link
+            href={`/plans/${planId}`}
+            className="inline-flex items-center gap-1 text-sm text-slate-500 transition-colors hover:text-slate-900"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to plan
           </Link>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
             Performance metrics
           </h1>
-          {product && (
-            <p className="text-sm text-slate-500">{productLabel(product)} plan</p>
-          )}
+          {product && <p className="text-sm text-slate-500">{productLabel(product)} plan</p>}
         </div>
-        <div className="flex rounded-lg border border-slate-200 bg-white p-0.5">
+        <div className="flex rounded-lg border border-slate-200 bg-white p-0.5 shadow-sm">
           {RANGES.map((r) => (
             <button
               key={r.hours}
               onClick={() => setHours(r.hours)}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={cn(
+                "rounded-md px-3 py-1.5 text-sm font-medium transition-all",
                 hours === r.hours
-                  ? "bg-slate-900 text-white"
-                  : "text-slate-600 hover:bg-slate-50"
-              }`}
+                  ? "bg-brand-600 text-white shadow-sm"
+                  : "text-slate-600 hover:bg-slate-50",
+              )}
             >
               {r.label}
             </button>
@@ -103,74 +108,68 @@ export function MetricsView({ planId }: { planId: string }) {
       </div>
 
       {product && !metricsSupported(product) ? (
-        <div className="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center">
+        <Card className="flex flex-col items-center p-12 text-center">
           <p className="text-sm font-medium text-slate-700">
             Metrics aren&apos;t available for {productLabel(product)} plans
           </p>
           <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500">
-            Detailed performance metrics are only collected for datacenter,
-            shared ISP and IPv6 products.
+            Detailed performance metrics are only collected for datacenter, shared
+            ISP and IPv6 products.
           </p>
-        </div>
+        </Card>
       ) : (
         <>
-          {/* Summary stat cards */}
           <Summary q={summaryQ} />
 
-          {/* Throughput */}
-          <ChartCard title="Throughput (Mbps)" q={throughputQ} empty={!throughputQ.data?.series?.length}>
+          <ChartCard title="Throughput (Mbps)" q={throughputQ} empty={!throughputQ.data?.series?.length} delay={60}>
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={throughputQ.data?.series ?? []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="bucket" tickFormatter={tick} fontSize={11} stroke="#94a3b8" />
-                <YAxis fontSize={11} stroke="#94a3b8" />
-                <Tooltip labelFormatter={(l) => tick(String(l))} />
+                <XAxis dataKey="bucket" tickFormatter={tick} {...AXIS} />
+                <YAxis {...AXIS} axisLine={false} />
+                <Tooltip labelFormatter={(l) => tick(String(l))} contentStyle={tooltipStyle} />
                 <Legend />
-                <Line type="monotone" dataKey="mbps" name="Avg" stroke="#0f172a" dot={false} strokeWidth={2} />
-                <Line type="monotone" dataKey="peak_mbps" name="Peak" stroke="#3b82f6" dot={false} strokeWidth={1.5} />
+                <Line type="monotone" dataKey="mbps" name="Avg" stroke={COLORS.brand} dot={false} strokeWidth={2} />
+                <Line type="monotone" dataKey="peak_mbps" name="Peak" stroke={COLORS.blue} dot={false} strokeWidth={1.5} />
               </LineChart>
             </ResponsiveContainer>
           </ChartCard>
 
-          {/* Latency */}
-          <ChartCard title="Connection duration (ms)" q={latencyQ} empty={!latencyQ.data?.series?.length}>
+          <ChartCard title="Connection duration (ms)" q={latencyQ} empty={!latencyQ.data?.series?.length} delay={80}>
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={latencyQ.data?.series ?? []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="bucket" tickFormatter={tick} fontSize={11} stroke="#94a3b8" />
-                <YAxis fontSize={11} stroke="#94a3b8" />
-                <Tooltip labelFormatter={(l) => tick(String(l))} />
+                <XAxis dataKey="bucket" tickFormatter={tick} {...AXIS} />
+                <YAxis {...AXIS} axisLine={false} />
+                <Tooltip labelFormatter={(l) => tick(String(l))} contentStyle={tooltipStyle} />
                 <Legend />
-                <Line type="monotone" dataKey="p50" name="p50" stroke="#10b981" dot={false} strokeWidth={1.5} />
-                <Line type="monotone" dataKey="p95" name="p95" stroke="#f59e0b" dot={false} strokeWidth={1.5} />
-                <Line type="monotone" dataKey="p99" name="p99" stroke="#ef4444" dot={false} strokeWidth={1.5} />
+                <Line type="monotone" dataKey="p50" name="p50" stroke={COLORS.green} dot={false} strokeWidth={1.5} />
+                <Line type="monotone" dataKey="p95" name="p95" stroke={COLORS.amber} dot={false} strokeWidth={1.5} />
+                <Line type="monotone" dataKey="p99" name="p99" stroke={COLORS.red} dot={false} strokeWidth={1.5} />
               </LineChart>
             </ResponsiveContainer>
           </ChartCard>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            {/* Status codes */}
-            <ChartCard title="Upstream status codes" q={statusQ} empty={!statusQ.data?.series?.length}>
+            <ChartCard title="Upstream status codes" q={statusQ} empty={!statusQ.data?.series?.length} delay={100}>
               <ResponsiveContainer width="100%" height={240}>
                 <AreaChart data={statusQ.data?.series ?? []}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="bucket" tickFormatter={tick} fontSize={11} stroke="#94a3b8" />
-                  <YAxis fontSize={11} stroke="#94a3b8" />
-                  <Tooltip labelFormatter={(l) => tick(String(l))} />
+                  <XAxis dataKey="bucket" tickFormatter={tick} {...AXIS} />
+                  <YAxis {...AXIS} axisLine={false} />
+                  <Tooltip labelFormatter={(l) => tick(String(l))} contentStyle={tooltipStyle} />
                   <Legend />
-                  <Area dataKey="s2xx" name="2xx" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.5} />
-                  <Area dataKey="s3xx" name="3xx" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.5} />
-                  <Area dataKey="s4xx" name="4xx" stackId="1" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.5} />
-                  <Area dataKey="s5xx" name="5xx" stackId="1" stroke="#ef4444" fill="#ef4444" fillOpacity={0.5} />
+                  <Area dataKey="s2xx" name="2xx" stackId="1" stroke={COLORS.green} fill={COLORS.green} fillOpacity={0.5} />
+                  <Area dataKey="s3xx" name="3xx" stackId="1" stroke={COLORS.blue} fill={COLORS.blue} fillOpacity={0.5} />
+                  <Area dataKey="s4xx" name="4xx" stackId="1" stroke={COLORS.amber} fill={COLORS.amber} fillOpacity={0.5} />
+                  <Area dataKey="s5xx" name="5xx" stackId="1" stroke={COLORS.red} fill={COLORS.red} fillOpacity={0.5} />
                 </AreaChart>
               </ResponsiveContainer>
             </ChartCard>
 
-            {/* Errors by category */}
             <ErrorsChart q={errorsQ} />
           </div>
 
-          {/* Destinations */}
           <DestinationsTable q={destQ} />
         </>
       )}
@@ -191,30 +190,32 @@ function ChartCard<T>({
   title,
   q,
   empty,
+  delay,
   children,
 }: {
   title: string;
   q: QueryLike<T>;
   empty?: boolean;
+  delay?: number;
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-6">
+    <Card className="p-6" delay={delay}>
       <h2 className="mb-4 text-sm font-medium text-slate-700">{title}</h2>
       {q.isLoading ? (
-        <div className="h-[240px] animate-pulse rounded bg-slate-100" />
+        <Skeleton className="h-[240px] w-full" />
       ) : q.isError ? (
         <p className="text-sm text-red-600">
           {(q.error as Error)?.message ?? "Failed to load"}
         </p>
       ) : empty ? (
-        <div className="flex h-[200px] items-center justify-center text-sm text-slate-400">
+        <div className="flex h-[200px] items-center justify-center rounded-xl bg-slate-50 text-sm text-slate-400">
           No data in this window
         </div>
       ) : (
         children
       )}
-    </section>
+    </Card>
   );
 }
 
@@ -232,20 +233,19 @@ function Summary({ q }: { q: QueryLike<MetricsSummary> }) {
   ];
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-      {cards.map((c) => (
-        <div key={c.label} className="rounded-xl border border-slate-200 bg-white p-4">
+      {cards.map((c, i) => (
+        <Card key={c.label} className="p-4" delay={i * 40}>
           <div className="text-xs uppercase tracking-wide text-slate-400">{c.label}</div>
-          <div className="mt-1 text-xl font-semibold text-slate-900">
+          <div className="mt-1 text-xl font-semibold tabular-nums text-slate-900">
             {q.isLoading ? "…" : c.value}
           </div>
-        </div>
+        </Card>
       ))}
     </div>
   );
 }
 
 function ErrorsChart({ q }: { q: QueryLike<TimeSeries<ErrorsPoint>> }) {
-  // Aggregate each error category across the window; show only non-zero.
   const series = q.data?.series ?? [];
   const totals: Record<string, number> = {};
   for (const point of series) {
@@ -260,18 +260,14 @@ function ErrorsChart({ q }: { q: QueryLike<TimeSeries<ErrorsPoint>> }) {
     .map(([category, count]) => ({ category, count }));
 
   return (
-    <ChartCard title="Errors by category" q={q} empty={data.length === 0}>
+    <ChartCard title="Errors by category" q={q} empty={data.length === 0} delay={120}>
       <ResponsiveContainer width="100%" height={240}>
         <BarChart data={data} layout="vertical" margin={{ left: 24 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-          <XAxis type="number" fontSize={11} stroke="#94a3b8" />
-          <YAxis type="category" dataKey="category" fontSize={11} stroke="#94a3b8" width={90} />
-          <Tooltip />
-          <Bar dataKey="count" fill="#ef4444" radius={[0, 4, 4, 0]}>
-            {data.map((_, i) => (
-              <Cell key={i} fill="#ef4444" />
-            ))}
-          </Bar>
+          <XAxis type="number" {...AXIS} />
+          <YAxis type="category" dataKey="category" {...AXIS} width={90} />
+          <Tooltip contentStyle={tooltipStyle} />
+          <Bar dataKey="count" fill={COLORS.red} radius={[0, 4, 4, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </ChartCard>
@@ -281,7 +277,7 @@ function ErrorsChart({ q }: { q: QueryLike<TimeSeries<ErrorsPoint>> }) {
 function DestinationsTable({ q }: { q: QueryLike<{ destinations: Destination[] }> }) {
   const rows = q.data?.destinations ?? [];
   return (
-    <ChartCard title="Top destinations" q={q} empty={rows.length === 0}>
+    <ChartCard title="Top destinations" q={q} empty={rows.length === 0} delay={140}>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="text-left text-xs uppercase tracking-wide text-slate-400">
@@ -298,13 +294,13 @@ function DestinationsTable({ q }: { q: QueryLike<{ destinations: Destination[] }
             {rows.map((d) => (
               <tr key={d.destination}>
                 <td className="py-2 pr-4 font-mono text-xs text-slate-700">{d.destination}</td>
-                <td className="py-2 pr-4">{d.connections}</td>
-                <td className="py-2 pr-4 text-emerald-600">{d.successes}</td>
-                <td className="py-2 pr-4 text-red-600">{d.errors}</td>
-                <td className="py-2 pr-4">
+                <td className="py-2 pr-4 tabular-nums">{d.connections}</td>
+                <td className="py-2 pr-4 tabular-nums text-emerald-600">{d.successes}</td>
+                <td className="py-2 pr-4 tabular-nums text-red-600">{d.errors}</td>
+                <td className="py-2 pr-4 tabular-nums">
                   {d.mb_received.toFixed(1)} / {d.mb_sent.toFixed(1)}
                 </td>
-                <td className="py-2">{d.p95_ms}</td>
+                <td className="py-2 tabular-nums">{d.p95_ms}</td>
               </tr>
             ))}
           </tbody>

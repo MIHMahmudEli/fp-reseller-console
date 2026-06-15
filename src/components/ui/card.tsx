@@ -1,0 +1,46 @@
+import { cn } from "@/lib/cn";
+
+export function Card({
+  className,
+  children,
+  hover = false,
+  delay,
+}: {
+  className?: string;
+  children: React.ReactNode;
+  hover?: boolean;
+  delay?: number;
+}) {
+  return (
+    <div
+      style={delay ? { animationDelay: `${delay}ms` } : undefined}
+      className={cn(
+        "animate-fade-in-up rounded-2xl border border-slate-200/70 bg-white shadow-sm",
+        hover && "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function CardHeader({
+  title,
+  icon,
+  action,
+}: {
+  title: string;
+  icon?: React.ReactNode;
+  action?: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-2">
+        {icon && <span className="text-slate-400">{icon}</span>}
+        <h2 className="text-sm font-medium text-slate-500">{title}</h2>
+      </div>
+      {action}
+    </div>
+  );
+}
