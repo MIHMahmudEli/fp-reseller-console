@@ -1,7 +1,7 @@
 # FlashProxy API — Exploration Findings
 
 Notes from probing the live + sandbox API before building. Raw JSON samples are
-in `.api-samples/` (gitignored). The saved OpenAPI spec is `openapi.json`.
+in `.api-samples/` (gitignored). The full OpenAPI spec is `docs/api.json`.
 
 ## Basics
 
