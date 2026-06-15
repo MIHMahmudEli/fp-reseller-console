@@ -13,6 +13,8 @@ export interface SessionData {
   keyHash?: string;
   label?: string;
   loggedInAt?: number;
+  /** Set when the operator authenticates to the /admin audit viewer. */
+  isAdmin?: boolean;
 }
 
 export const sessionOptions: SessionOptions = {

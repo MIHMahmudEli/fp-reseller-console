@@ -13,6 +13,9 @@ const schema = z.object({
   SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be at least 32 chars"),
   DATABASE_URL: z.string().url(),
   DIRECT_URL: z.string().url().optional(),
+  // Optional operator password for the /admin audit viewer. When unset, the
+  // admin area is disabled (login always rejected).
+  ADMIN_TOKEN: z.string().min(8).optional(),
 });
 
 const parsed = schema.safeParse(process.env);
