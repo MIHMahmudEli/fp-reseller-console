@@ -126,8 +126,8 @@ export function MetricsView({ planId }: { planId: string }) {
                 <YAxis {...AXIS} axisLine={false} />
                 <Tooltip labelFormatter={(l) => tick(String(l))} contentStyle={tooltipStyle} />
                 <Legend />
-                <Line type="monotone" dataKey="mbps" name="Avg" stroke={COLORS.brand} dot={false} strokeWidth={2} />
-                <Line type="monotone" dataKey="peak_mbps" name="Peak" stroke={COLORS.blue} dot={false} strokeWidth={1.5} />
+                <Line type="monotone" dataKey="mbps" name="Avg" stroke={COLORS.brand} dot={{ r: 2 }} activeDot={{ r: 4 }} strokeWidth={2} />
+                <Line type="monotone" dataKey="peak_mbps" name="Peak" stroke={COLORS.blue} dot={{ r: 2 }} activeDot={{ r: 4 }} strokeWidth={1.5} />
               </LineChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -140,9 +140,9 @@ export function MetricsView({ planId }: { planId: string }) {
                 <YAxis {...AXIS} axisLine={false} />
                 <Tooltip labelFormatter={(l) => tick(String(l))} contentStyle={tooltipStyle} />
                 <Legend />
-                <Line type="monotone" dataKey="p50" name="p50" stroke={COLORS.green} dot={false} strokeWidth={1.5} />
-                <Line type="monotone" dataKey="p95" name="p95" stroke={COLORS.amber} dot={false} strokeWidth={1.5} />
-                <Line type="monotone" dataKey="p99" name="p99" stroke={COLORS.red} dot={false} strokeWidth={1.5} />
+                <Line type="monotone" dataKey="p50" name="p50" stroke={COLORS.green} dot={{ r: 2 }} activeDot={{ r: 4 }} strokeWidth={1.5} />
+                <Line type="monotone" dataKey="p95" name="p95" stroke={COLORS.amber} dot={{ r: 2 }} activeDot={{ r: 4 }} strokeWidth={1.5} />
+                <Line type="monotone" dataKey="p99" name="p99" stroke={COLORS.red} dot={{ r: 2 }} activeDot={{ r: 4 }} strokeWidth={1.5} />
               </LineChart>
             </ResponsiveContainer>
           </ChartCard>

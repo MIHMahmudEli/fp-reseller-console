@@ -38,6 +38,21 @@ export function UsageSummaryCard({ delay }: { delay?: number }) {
     data?.daily_breakdown.map((d) => ({ date: d.date.slice(5), gb: d.gb })) ?? [];
   const byProduct = Object.entries(data?.by_product ?? {});
 
+  // The API's daily_breakdown is often empty for sub-day usage even when there
+  // IS traffic — fall back to a per-product breakdown so the chart isn't blank.
+  const chart =
+    daily.length > 0
+      ? { data: daily, key: "date", label: "Daily" }
+      : {
+          data: byProduct.map(([p, v]) => ({
+            date: productLabel(p),
+            gb: Number((v.bytes / 1e9).toFixed(4)),
+          })),
+          key: "date",
+          label: "By product",
+        };
+  const hasChart = chart.data.some((d) => d.gb > 0);
+
   return (
     <Card className="p-6" delay={delay}>
       <CardHeader title="Usage (last 24h)" icon={<BarChart3 className="h-4 w-4" />} />
@@ -55,10 +70,13 @@ export function UsageSummaryCard({ delay }: { delay?: number }) {
             <Stat label="Active plans" value={String(data?.summary.active_plans ?? 0)} />
           </div>
 
-          {daily.length > 0 ? (
+          {hasChart ? (
             <div className="mt-6">
+              <div className="mb-2 text-xs uppercase tracking-wide text-slate-400">
+                {chart.label}
+              </div>
               <ResponsiveContainer width="100%" height={180}>
-                <BarChart data={daily}>
+                <BarChart data={chart.data}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                   <XAxis dataKey="date" fontSize={11} stroke="#94a3b8" tickLine={false} />
                   <YAxis fontSize={11} stroke="#94a3b8" tickLine={false} axisLine={false} />
