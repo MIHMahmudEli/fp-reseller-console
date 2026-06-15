@@ -15,8 +15,8 @@ export function Card({
     <div
       style={delay ? { animationDelay: `${delay}ms` } : undefined}
       className={cn(
-        "animate-fade-in-up rounded-2xl border border-slate-200/70 bg-white shadow-sm",
-        hover && "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
+        "animate-fade-in-up rounded-2xl border border-slate-200/60 bg-white shadow-card",
+        hover && "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-pop",
         className,
       )}
     >

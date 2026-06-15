@@ -124,14 +124,3 @@ The dashboard itself is **read-only** against the API — it never creates or
 cancels plans, so running it costs nothing. Plan provisioning was done only via
 the one-off `scripts/provision-*.mjs` helpers.
 
-## What I'd do next
-
-- **Plan mutations** — create / extend / upgrade / cancel flows, with the API's
-  idempotency keys and clear "this spends real money" confirmations.
-- **Self-serve activity** — let a reseller see their own audit history.
-- **Sub-users** management (list/create/update) and the AI "investigate" feature.
-- **Hardening** — rate limiting, login-failure auditing, CSRF tokens on mutations,
-  HMAC request signing (supported by the API), and tests (unit + a Playwright e2e).
-- **Real-time** — push live usage via SSE instead of polling.
-- **Deploy** to Vercel with the Supabase connection and a proper admin login.
-```
