@@ -19,13 +19,12 @@ import {
   YAxis,
 } from "recharts";
 import { apiGet } from "@/lib/fetcher";
-import { formatGB, productLabel } from "@/lib/format";
+import { formatGB, productLabel, supportsMetrics } from "@/lib/format";
 import { AXIS, COLORS, tooltipStyle } from "@/lib/chart";
 import { cn } from "@/lib/cn";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  METRICS_SUPPORTED_PRODUCTS,
   type Destination,
   type ErrorsPoint,
   type LatencyPoint,
@@ -42,9 +41,7 @@ const RANGES = [
   { label: "7d", hours: 168 },
 ];
 
-function metricsSupported(product: string): boolean {
-  return (METRICS_SUPPORTED_PRODUCTS as readonly string[]).includes(product);
-}
+const metricsSupported = supportsMetrics;
 
 function tick(bucket: string): string {
   return bucket?.length >= 16 ? bucket.slice(5, 16) : bucket;

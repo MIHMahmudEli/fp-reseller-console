@@ -9,16 +9,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatDate, formatGB, productLabel, statusClasses } from "@/lib/format";
 import {
-  METRICS_SUPPORTED_PRODUCTS,
-  type Plan,
-  type PlanUsage,
-} from "@/lib/flashproxy/types";
+  formatDate,
+  formatGB,
+  productLabel,
+  statusClasses,
+  supportsMetrics,
+} from "@/lib/format";
+import { type Plan, type PlanUsage } from "@/lib/flashproxy/types";
 
-function metricsSupported(product: string): boolean {
-  return (METRICS_SUPPORTED_PRODUCTS as readonly string[]).includes(product);
-}
+const metricsSupported = supportsMetrics;
 
 export function PlanDetail({ planId }: { planId: string }) {
   const planQ = useQuery({

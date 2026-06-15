@@ -101,8 +101,27 @@ envelopes + connection/error/latency/destination items are real):
 
 Both plans were created and cancelled within the same script run; no refunds on cancel.
 
-## Open question (not blocking)
+## Connecting to the proxy (to generate real traffic)
 
-Datacenter proxy auth rejected our test requests (`auth` error category). Likely
-needs source-IP allowlisting or username targeting suffixes — worth confirming
-later, but not needed to build the dashboard.
+The proxy gateway username needs a **targeting suffix** — plain `user:pass`
+returns `407`. The exact format per product comes from
+`GET /proxies/connection-info?product_type=<product>`, e.g.:
+
+- residential-lite / ipv6-residential: `username-country-us:password@host:port`
+- residential: `username-country-us-state-california-city-losangeles:password@...`
+
+Findings driving real traffic for the metrics demo:
+
+- **ipv6-residential works** as a user:pass gateway with the `-country-us`
+  suffix (no IP allowlist needed). Real traffic populated summary, throughput,
+  hourly-usage, destinations, latency and errors. Upstream success is a bit
+  flaky (residential IPs) — reliable targets like `neverssl.com` and
+  `speedtest.tele2.net` work best.
+- **datacenter did not authenticate** in testing (407 with creds, suffix, and
+  IP-only) — likely needs separate provisioning. Its connection metrics still
+  populate (connections/latency/destinations) from the attempts.
+- **Metrics product gating is hyphen/underscore-inconsistent**: create returns
+  `ipv6-residential` but the supported list uses `ipv6_residential`. The
+  dashboard normalizes (`supportsMetrics()` in `lib/format.ts`).
+
+On Windows, `curl -o /dev/null` fails (use `NUL`); the scripts handle both.

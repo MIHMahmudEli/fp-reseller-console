@@ -106,17 +106,23 @@ node --env-file=.env scripts/db-check.mjs             # resellers + recent audit
 
 ## Notes on the $50 test balance
 
-Spending was deliberately minimal — **$0.39 total**, both on disposable plans that
-were created and cancelled within the same script run to learn response shapes
-that the spec/sandbox didn't expose:
+Spending was deliberate and small — **$0.66 total** (balance **$49.34**):
 
 | Action | Cost | Why |
 |--------|------|-----|
-| Live `residential-lite` 1GB | $0.21 | Discovered metrics are product-gated |
-| Live `datacenter` 1GB | $0.18 | Captured the real `/metrics/*` response shapes |
+| Live `residential-lite` 1GB (cancelled) | $0.21 | Discovered metrics are product-gated |
+| Live `datacenter` 1GB (cancelled) | $0.18 | Captured the real `/metrics/*` response shapes |
+| Live `datacenter` 1GB (active) | $0.18 | Demo plan — but the datacenter gateway wouldn't authenticate our creds |
+| Live `ipv6-residential` 1GB (active) | $0.09 | Demo plan with **real successful traffic + populated metrics** |
+
+Two plans are kept **active** so the dashboard shows live metrics. To populate
+the metrics, real traffic was driven through the proxy — note the gateway
+username needs a targeting suffix (e.g. `username-country-us:password@host`),
+discovered via `GET /proxies/connection-info`.
 
 The dashboard itself is **read-only** against the API — it never creates or
-cancels plans, so running it costs nothing.
+cancels plans, so running it costs nothing. Plan provisioning was done only via
+the one-off `scripts/provision-*.mjs` helpers.
 
 ## What I'd do next
 

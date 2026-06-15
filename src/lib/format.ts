@@ -1,4 +1,16 @@
+import { METRICS_SUPPORTED_PRODUCTS } from "@/lib/flashproxy/types";
+
 /** Presentation helpers shared by client components. */
+
+/**
+ * Whether a product exposes /metrics/*. The API is inconsistent about hyphens
+ * vs underscores (e.g. "ipv6-residential" on create, "ipv6_residential" in the
+ * supported list), so normalize before comparing.
+ */
+export function supportsMetrics(product: string): boolean {
+  const norm = product.replace(/-/g, "_");
+  return (METRICS_SUPPORTED_PRODUCTS as readonly string[]).includes(norm);
+}
 
 export function formatBytes(bytes: number): string {
   if (!bytes || bytes < 0) return "0 B";
