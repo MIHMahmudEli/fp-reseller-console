@@ -1,5 +1,13 @@
 import "server-only";
-import { createHash } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
+
+/** Constant-time string comparison (avoids leaking the admin token via timing). */
+export function safeEqual(a: string, b: string): boolean {
+  const ab = Buffer.from(a);
+  const bb = Buffer.from(b);
+  if (ab.length !== bb.length) return false;
+  return timingSafeEqual(ab, bb);
+}
 
 /**
  * Stable, non-reversible identifier for an API key. We store this — never the

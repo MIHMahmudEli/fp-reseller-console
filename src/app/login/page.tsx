@@ -17,8 +17,8 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      await apiPost("/api/auth/login", { apiKey });
-      router.replace("/dashboard");
+      const res = await apiPost<{ role: string }>("/api/auth/login", { apiKey });
+      router.replace(res.role === "admin" ? "/admin" : "/dashboard");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong");
       setLoading(false);

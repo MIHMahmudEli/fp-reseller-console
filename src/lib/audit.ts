@@ -1,11 +1,14 @@
 import "server-only";
 import { headers } from "next/headers";
+import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
 
 export type AuditEvent =
   | "login_success"
   | "login_failure"
   | "logout"
+  | "admin_login_success"
+  | "admin_logout"
   | "view_balance"
   | "view_transactions"
   | "view_pricing"
@@ -15,7 +18,8 @@ export type AuditEvent =
   | "view_metrics";
 
 interface LogInput {
-  resellerId: string;
+  /** Omitted for operator/system events (e.g. admin login). */
+  resellerId?: string;
   event: AuditEvent;
   method?: string;
   path?: string;
@@ -41,18 +45,18 @@ async function clientContext() {
 export async function logAudit(input: LogInput): Promise<void> {
   try {
     const { ip, userAgent } = await clientContext();
-    await prisma.auditLog.create({
-      data: {
-        resellerId: input.resellerId,
-        event: input.event,
-        method: input.method,
-        path: input.path,
-        status: input.status,
-        ip,
-        userAgent,
-        metadata: input.metadata as object | undefined,
-      },
-    });
+    const data: Prisma.AuditLogUncheckedCreateInput = {
+      event: input.event,
+      method: input.method,
+      path: input.path,
+      status: input.status,
+      ip,
+      userAgent,
+      // resellerId is null for operator/system events (e.g. admin login).
+      resellerId: input.resellerId ?? null,
+      metadata: input.metadata as Prisma.InputJsonValue | undefined,
+    };
+    await prisma.auditLog.create({ data });
   } catch (err) {
     console.error("[audit] failed to write audit log:", err);
   }

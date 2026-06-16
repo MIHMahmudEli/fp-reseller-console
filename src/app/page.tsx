@@ -3,5 +3,6 @@ import { getSession } from "@/lib/session";
 
 export default async function Home() {
   const session = await getSession();
+  if (session.isAdmin) redirect("/admin");
   redirect(session.resellerId ? "/dashboard" : "/login");
 }

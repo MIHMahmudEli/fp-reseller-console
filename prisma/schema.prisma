@@ -29,10 +29,11 @@ model Reseller {
 /// Append-only audit trail of logins and actions.
 model AuditLog {
   id         String  @id @default(cuid())
-  reseller   Reseller @relation(fields: [resellerId], references: [id], onDelete: Cascade)
-  resellerId String
+  /// Optional: operator/admin events aren't tied to a reseller.
+  reseller   Reseller? @relation(fields: [resellerId], references: [id], onDelete: Cascade)
+  resellerId String?
 
-  /// e.g. login_success, login_failure, logout, view_balance, view_plan, view_metrics
+  /// e.g. login_success, admin_login_success, logout, view_balance, view_metrics
   event     String
   method    String?
   path      String?

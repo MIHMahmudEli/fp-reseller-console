@@ -35,7 +35,7 @@ interface AuditRow {
   status: number | null;
   ip: string | null;
   createdAt: string;
-  reseller: { label: string | null };
+  reseller: { label: string | null } | null;
 }
 
 const NAV = [
@@ -337,7 +337,7 @@ export function AdminView() {
                               {fmtTime(e.createdAt)}
                             </td>
                             <td className="px-4 py-2.5 font-mono text-xs text-slate-600">
-                              {e.reseller.label ?? "—"}
+                              {e.reseller?.label ?? "operator"}
                             </td>
                             <td className="px-4 py-2.5">
                               <Badge className={eventClasses(e.event)}>{e.event}</Badge>
@@ -373,7 +373,7 @@ export function AdminView() {
                         </div>
                         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
                           <span>
-                            Key <span className="font-mono text-slate-600">{e.reseller.label ?? "—"}</span>
+                            Key <span className="font-mono text-slate-600">{e.reseller?.label ?? "operator"}</span>
                           </span>
                           <span>
                             Status <span className="tabular-nums text-slate-700">{e.status ?? "—"}</span>
