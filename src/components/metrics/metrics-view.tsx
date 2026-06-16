@@ -53,7 +53,9 @@ function useMetric<T>(planId: string, metric: string, hours: number) {
 }
 
 export function MetricsView({ planId }: { planId: string }) {
-  const [hours, setHours] = useState(24);
+  // Default to 7d so recent demo traffic stays visible (metrics are a rolling
+  // window; 24h would look empty a day after traffic was driven).
+  const [hours, setHours] = useState(168);
 
   const planQ = useQuery({
     queryKey: ["plan", planId],
