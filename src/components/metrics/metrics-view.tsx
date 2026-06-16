@@ -7,8 +7,6 @@ import { ArrowLeft } from "lucide-react";
 import {
   Area,
   AreaChart,
-  Bar,
-  BarChart,
   CartesianGrid,
   Legend,
   Line,
@@ -255,18 +253,31 @@ function ErrorsChart({ q }: { q: QueryLike<TimeSeries<ErrorsPoint>> }) {
     .filter(([, v]) => v > 0)
     .sort((a, b) => b[1] - a[1])
     .map(([category, count]) => ({ category, count }));
+  const max = Math.max(...data.map((d) => d.count), 1);
 
   return (
     <ChartCard title="Errors by category" q={q} empty={data.length === 0} delay={120}>
-      <ResponsiveContainer width="100%" height={240}>
-        <BarChart data={data} layout="vertical" margin={{ left: 24 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-          <XAxis type="number" {...AXIS} />
-          <YAxis type="category" dataKey="category" {...AXIS} width={90} />
-          <Tooltip contentStyle={tooltipStyle} />
-          <Bar dataKey="count" fill={COLORS.red} radius={[0, 4, 4, 0]} />
-        </BarChart>
-      </ResponsiveContainer>
+      <ul className="space-y-2.5 py-1">
+        {data.map((d) => (
+          <li key={d.category} className="flex items-center gap-3">
+            <span
+              className="w-32 shrink-0 truncate text-xs text-slate-500"
+              title={d.category}
+            >
+              {d.category}
+            </span>
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+              <div
+                className="h-full rounded-full bg-red-500 transition-all duration-500"
+                style={{ width: `${(d.count / max) * 100}%` }}
+              />
+            </div>
+            <span className="w-8 shrink-0 text-right text-xs font-medium tabular-nums text-slate-700">
+              {d.count}
+            </span>
+          </li>
+        ))}
+      </ul>
     </ChartCard>
   );
 }
