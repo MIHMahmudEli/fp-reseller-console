@@ -146,7 +146,17 @@ export function MetricsView({ planId }: { planId: string }) {
           </ChartCard>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <ChartCard title="Upstream status codes" q={statusQ} empty={!statusQ.data?.series?.length} delay={100}>
+            <ChartCard
+              title="Upstream status codes"
+              q={statusQ}
+              empty={
+                !statusQ.data?.series?.some(
+                  (p) => p.s2xx + p.s3xx + p.s4xx + p.s5xx > 0,
+                )
+              }
+              emptyHint="Status codes are only reported for plain-HTTP traffic on datacenter / ISP plans."
+              delay={100}
+            >
               <ResponsiveContainer width="100%" height={240}>
                 <AreaChart data={statusQ.data?.series ?? []}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -185,12 +195,14 @@ function ChartCard<T>({
   title,
   q,
   empty,
+  emptyHint,
   delay,
   children,
 }: {
   title: string;
   q: QueryLike<T>;
   empty?: boolean;
+  emptyHint?: string;
   delay?: number;
   children: React.ReactNode;
 }) {
@@ -204,8 +216,11 @@ function ChartCard<T>({
           {(q.error as Error)?.message ?? "Failed to load"}
         </p>
       ) : empty ? (
-        <div className="flex h-[200px] items-center justify-center rounded-xl bg-slate-50 text-sm text-slate-400">
-          No data in this window
+        <div className="flex h-[200px] flex-col items-center justify-center gap-1.5 rounded-xl bg-slate-50 px-6 text-center">
+          <span className="text-sm text-slate-400">No data in this window</span>
+          {emptyHint && (
+            <span className="max-w-xs text-xs text-slate-400/80">{emptyHint}</span>
+          )}
         </div>
       ) : (
         children
