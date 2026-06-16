@@ -72,12 +72,12 @@ export function UsageSummaryCard({ delay }: { delay?: number }) {
 
           {hasChart ? (
             <div className="mt-6">
-              <div className="mb-2 text-xs uppercase tracking-wide text-slate-400">
+              <div className="mb-2 text-xs uppercase tracking-wide text-faint">
                 {chart.label}
               </div>
               <ResponsiveContainer width="100%" height={180}>
                 <BarChart data={chart.data}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                   <XAxis dataKey="date" fontSize={11} stroke="#94a3b8" tickLine={false} />
                   <YAxis fontSize={11} stroke="#94a3b8" tickLine={false} axisLine={false} />
                   <Tooltip
@@ -89,7 +89,7 @@ export function UsageSummaryCard({ delay }: { delay?: number }) {
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="mt-6 flex h-24 items-center justify-center rounded-xl bg-slate-50 text-sm text-slate-400">
+            <div className="mt-6 flex h-24 items-center justify-center rounded-xl bg-subtle text-sm text-faint">
               No usage recorded in this window
             </div>
           )}
@@ -98,8 +98,8 @@ export function UsageSummaryCard({ delay }: { delay?: number }) {
             <div className="mt-4 space-y-1.5">
               {byProduct.map(([product, v]) => (
                 <div key={product} className="flex justify-between text-sm">
-                  <span className="text-slate-600">{productLabel(product)}</span>
-                  <span className="font-medium tabular-nums text-slate-900">
+                  <span className="text-muted">{productLabel(product)}</span>
+                  <span className="font-medium tabular-nums text-fg">
                     {formatGB(v.bytes / 1e9)}
                   </span>
                 </div>
@@ -115,8 +115,8 @@ export function UsageSummaryCard({ delay }: { delay?: number }) {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-xs uppercase tracking-wide text-slate-400">{label}</div>
-      <div className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">
+      <div className="text-xs uppercase tracking-wide text-faint">{label}</div>
+      <div className="mt-1 text-2xl font-semibold tabular-nums text-fg">
         {value}
       </div>
     </div>

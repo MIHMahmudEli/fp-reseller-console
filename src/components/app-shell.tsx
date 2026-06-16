@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { apiPost } from "@/lib/fetcher";
 import { cn } from "@/lib/cn";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const NAV = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -56,7 +57,7 @@ export function AppShell({
   return (
     <div className="min-h-screen">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-slate-200/70 bg-white/70 px-4 py-5 backdrop-blur-xl md:flex">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border/70 bg-surface/70 px-4 py-5 backdrop-blur-xl md:flex">
         <div className="px-2">
           <Brand />
         </div>
@@ -72,14 +73,14 @@ export function AppShell({
                 className={cn(
                   "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
                   active
-                    ? "bg-brand-50 text-brand-700"
-                    : "text-slate-500 hover:bg-slate-100/80 hover:text-slate-900",
+                    ? "bg-accent-soft text-accent-text"
+                    : "text-muted hover:bg-subtle/80 hover:text-fg",
                 )}
               >
                 <Icon
                   className={cn(
                     "h-[18px] w-[18px] transition-transform group-hover:scale-110",
-                    active ? "text-brand-600" : "text-slate-400",
+                    active ? "text-accent-text" : "text-faint",
                   )}
                 />
                 {item.label}
@@ -88,30 +89,36 @@ export function AppShell({
           })}
         </nav>
 
-        <div className="mt-auto rounded-2xl border border-slate-200/70 bg-white p-3 shadow-soft">
-          <div className="px-1 text-xs text-slate-400">Signed in</div>
-          <div className="mt-0.5 px-1 font-mono text-sm text-slate-700">{label}</div>
-          <button
-            onClick={logout}
-            disabled={loggingOut}
-            className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 disabled:opacity-50"
-          >
-            <LogOut className="h-4 w-4" />
-            {loggingOut ? "Signing out…" : "Sign out"}
-          </button>
+        <div className="mt-auto rounded-2xl border border-border/70 bg-surface p-3 shadow-soft">
+          <div className="px-1 text-xs text-faint">Signed in</div>
+          <div className="mt-0.5 px-1 font-mono text-sm text-fg">{label}</div>
+          <div className="mt-2.5 flex items-center gap-2">
+            <button
+              onClick={logout}
+              disabled={loggingOut}
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-subtle disabled:opacity-50"
+            >
+              <LogOut className="h-4 w-4" />
+              {loggingOut ? "Signing out…" : "Sign out"}
+            </button>
+            <ThemeToggle />
+          </div>
         </div>
       </aside>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/70 bg-white/80 px-4 py-3 backdrop-blur-xl md:hidden">
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border/70 bg-surface/80 px-4 py-3 backdrop-blur-xl md:hidden">
         <Brand />
-        <button
-          onClick={logout}
-          disabled={loggingOut}
-          className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 disabled:opacity-50"
-        >
-          <LogOut className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={logout}
+            disabled={loggingOut}
+            className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-muted disabled:opacity-50"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
+        </div>
       </header>
 
       {/* Content */}
@@ -122,7 +129,7 @@ export function AppShell({
       </div>
 
       {/* Mobile bottom tab bar */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 flex border-t border-slate-200/70 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 flex border-t border-border/70 bg-surface/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
         {NAV.map((item) => {
           const active = isActive(item.href);
           const Icon = item.icon;
@@ -132,7 +139,7 @@ export function AppShell({
               href={item.href}
               className={cn(
                 "flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-                active ? "text-brand-600" : "text-slate-400",
+                active ? "text-accent-text" : "text-faint",
               )}
             >
               <Icon className={cn("h-5 w-5 transition-transform", active && "scale-110")} />

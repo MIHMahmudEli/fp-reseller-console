@@ -51,14 +51,14 @@ export function PlanDetail({ planId }: { planId: string }) {
         <div>
           <Link
             href="/plans"
-            className="inline-flex items-center gap-1 text-sm text-slate-500 transition-colors hover:text-slate-900"
+            className="inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-fg"
           >
             <ArrowLeft className="h-4 w-4" /> Plans
           </Link>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-fg">
             {productLabel(plan.product)}
           </h1>
-          <p className="font-mono text-xs text-slate-400">{plan.plan_id}</p>
+          <p className="font-mono text-xs text-faint">{plan.plan_id}</p>
         </div>
         <Badge className={`${statusClasses(plan.status)} px-3 py-1 text-sm`}>
           {plan.status}
@@ -69,12 +69,12 @@ export function PlanDetail({ planId }: { planId: string }) {
         <Card className="p-6" delay={60}>
           <CardHeader title="Bandwidth usage" icon={<Gauge className="h-4 w-4" />} />
           <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-2xl font-semibold tabular-nums text-slate-900">
+            <span className="text-2xl font-semibold tabular-nums text-fg">
               {formatGB((usage?.gb_used ?? plan.limits.bytes_used / 1e9) || 0)}
             </span>
-            <span className="text-sm text-slate-500">of {plan.limits.max_gb} GB</span>
+            <span className="text-sm text-muted">of {plan.limits.max_gb} GB</span>
           </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-subtle">
             <div
               className="h-full rounded-full bg-brand-600 transition-all duration-500"
               style={{ width: `${Math.min(100, pct)}%` }}
@@ -112,10 +112,10 @@ export function PlanDetail({ planId }: { planId: string }) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4 text-slate-400" />
-              <h2 className="text-sm font-medium text-slate-700">Performance metrics</h2>
+              <BarChart3 className="h-4 w-4 text-faint" />
+              <h2 className="text-sm font-medium text-fg">Performance metrics</h2>
             </div>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-muted">
               {metricsSupported(plan.product)
                 ? "Throughput, latency, errors, status codes and top destinations."
                 : `Metrics aren't available for ${productLabel(plan.product)} plans.`}
@@ -135,8 +135,8 @@ export function PlanDetail({ planId }: { planId: string }) {
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs uppercase tracking-wide text-slate-400">{label}</dt>
-      <dd className="mt-0.5 font-medium text-slate-800">{value}</dd>
+      <dt className="text-xs uppercase tracking-wide text-faint">{label}</dt>
+      <dd className="mt-0.5 font-medium text-fg">{value}</dd>
     </div>
   );
 }

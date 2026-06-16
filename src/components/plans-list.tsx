@@ -42,12 +42,12 @@ export function PlansList() {
 
   if (plans.length === 0) {
     return (
-      <div className="animate-fade-in-up flex flex-col items-center rounded-2xl border border-dashed border-slate-300 bg-white/60 p-12 text-center">
-        <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+      <div className="animate-fade-in-up flex flex-col items-center rounded-2xl border border-dashed border-border bg-surface/60 p-12 text-center">
+        <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-subtle text-faint">
           <Server className="h-6 w-6" />
         </span>
-        <p className="text-sm font-medium text-slate-700">No plans yet</p>
-        <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500">
+        <p className="text-sm font-medium text-fg">No plans yet</p>
+        <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
           When you purchase a proxy plan it will appear here with its usage,
           connection details, and performance metrics.
         </p>
@@ -58,9 +58,9 @@ export function PlansList() {
   return (
     <>
       {/* Desktop table */}
-      <div className="animate-fade-in-up hidden overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm sm:block">
+      <div className="animate-fade-in-up hidden overflow-hidden rounded-2xl border border-border/70 bg-surface shadow-sm sm:block">
         <table className="w-full text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50/70 text-left text-xs uppercase tracking-wide text-slate-500">
+          <thead className="border-b border-border bg-subtle/70 text-left text-xs uppercase tracking-wide text-muted">
             <tr>
               <th className="px-4 py-3 font-medium">Product</th>
               <th className="px-4 py-3 font-medium">Status</th>
@@ -69,14 +69,14 @@ export function PlansList() {
               <th className="px-4 py-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border">
             {plans.map((p) => {
               const pct = usagePct(p.limits.bytes_used, p.limits.max_bytes);
               return (
-                <tr key={p.plan_id} className="group transition-colors hover:bg-slate-50">
+                <tr key={p.plan_id} className="group transition-colors hover:bg-subtle">
                   <td className="px-4 py-3">
-                    <div className="font-medium text-slate-900">{productLabel(p.product)}</div>
-                    <div className="font-mono text-xs text-slate-400">
+                    <div className="font-medium text-fg">{productLabel(p.product)}</div>
+                    <div className="font-mono text-xs text-faint">
                       {p.plan_id.slice(0, 8)}…
                     </div>
                   </td>
@@ -90,11 +90,11 @@ export function PlansList() {
                       max={p.limits.max_gb}
                     />
                   </td>
-                  <td className="px-4 py-3 text-slate-600">{formatDate(p.expires_at)}</td>
+                  <td className="px-4 py-3 text-muted">{formatDate(p.expires_at)}</td>
                   <td className="px-4 py-3 text-right">
                     <Link
                       href={`/plans/${p.plan_id}`}
-                      className="inline-flex items-center gap-1 text-sm font-medium text-brand-600 transition-colors hover:text-brand-700"
+                      className="inline-flex items-center gap-1 text-sm font-medium text-accent-text transition-colors hover:text-accent-text"
                     >
                       View
                       <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -116,16 +116,16 @@ export function PlansList() {
               key={p.plan_id}
               href={`/plans/${p.plan_id}`}
               style={{ animationDelay: `${i * 50}ms` }}
-              className="animate-fade-in-up block rounded-2xl border border-slate-200/70 bg-white p-4 shadow-sm transition-all active:scale-[0.99]"
+              className="animate-fade-in-up block rounded-2xl border border-border/70 bg-surface p-4 shadow-sm transition-all active:scale-[0.99]"
             >
               <div className="flex items-center justify-between">
-                <div className="font-medium text-slate-900">{productLabel(p.product)}</div>
+                <div className="font-medium text-fg">{productLabel(p.product)}</div>
                 <Badge className={statusClasses(p.status)}>{p.status}</Badge>
               </div>
               <div className="mt-3">
                 <UsageMini pct={pct} used={p.limits.bytes_used} max={p.limits.max_gb} />
               </div>
-              <div className="mt-3 text-xs text-slate-400">
+              <div className="mt-3 text-xs text-faint">
                 Expires {formatDate(p.expires_at)}
               </div>
             </Link>
@@ -139,13 +139,13 @@ export function PlansList() {
 function UsageMini({ pct, used, max }: { pct: number; used: number; max: number }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1.5 w-24 overflow-hidden rounded-full bg-slate-100">
+      <div className="h-1.5 w-24 overflow-hidden rounded-full bg-subtle">
         <div
           className="h-full rounded-full bg-brand-600 transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="text-xs tabular-nums text-slate-500">
+      <span className="text-xs tabular-nums text-muted">
         {formatGB(used / 1e9)} / {max} GB
       </span>
     </div>

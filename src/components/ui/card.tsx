@@ -15,7 +15,7 @@ export function Card({
     <div
       style={delay ? { animationDelay: `${delay}ms` } : undefined}
       className={cn(
-        "animate-fade-in-up rounded-2xl border border-slate-200/60 bg-white shadow-card",
+        "animate-fade-in-up rounded-2xl border border-border/60 bg-surface shadow-card",
         hover && "transition-all duration-200 hover:-translate-y-0.5 hover:shadow-pop",
         className,
       )}
@@ -37,8 +37,8 @@ export function CardHeader({
   return (
     <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-2">
-        {icon && <span className="text-slate-400">{icon}</span>}
-        <h2 className="text-sm font-medium text-slate-500">{title}</h2>
+        {icon && <span className="text-faint">{icon}</span>}
+        <h2 className="text-sm font-medium text-muted">{title}</h2>
       </div>
       {action}
     </div>

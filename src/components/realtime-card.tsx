@@ -40,18 +40,18 @@ export function RealtimeCard({ delay }: { delay?: number }) {
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
           <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
         </span>
-        <h2 className="text-sm font-medium text-slate-500">Live activity</h2>
+        <h2 className="text-sm font-medium text-muted">Live activity</h2>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
         {stats.map((s) => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="rounded-xl bg-slate-50 p-3">
-              <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-slate-400">
+            <div key={s.label} className="rounded-xl bg-subtle p-3">
+              <div className="flex items-center gap-1.5 text-xs uppercase tracking-wide text-faint">
                 <Icon className="h-3.5 w-3.5" />
                 {s.label}
               </div>
-              <div className="mt-1.5 text-xl font-semibold tabular-nums text-slate-900">
+              <div className="mt-1.5 text-xl font-semibold tabular-nums text-fg">
                 {isLoading ? "…" : s.value}
               </div>
             </div>

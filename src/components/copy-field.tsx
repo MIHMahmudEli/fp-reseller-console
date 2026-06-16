@@ -23,17 +23,17 @@ export function CopyField({
 
   return (
     <div>
-      <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
+      <div className="text-xs font-medium uppercase tracking-wide text-faint">
         {label}
       </div>
       <div className="mt-1 flex items-center gap-2">
-        <code className="flex-1 truncate rounded-lg bg-slate-50 px-3 py-2 font-mono text-sm text-slate-800">
+        <code className="flex-1 truncate rounded-lg bg-subtle px-3 py-2 font-mono text-sm text-fg">
           {revealed ? value : "•".repeat(Math.min(value.length, 16))}
         </code>
         {secret && (
           <button
             onClick={() => setRevealed((r) => !r)}
-            className="rounded-lg border border-slate-200 p-2 text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
+            className="rounded-lg border border-border p-2 text-muted transition-colors hover:bg-subtle hover:text-fg"
             aria-label={revealed ? "Hide" : "Show"}
           >
             {revealed ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -41,7 +41,7 @@ export function CopyField({
         )}
         <button
           onClick={copy}
-          className="rounded-lg border border-slate-200 p-2 text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
+          className="rounded-lg border border-border p-2 text-muted transition-colors hover:bg-subtle hover:text-fg"
           aria-label="Copy"
         >
           {copied ? (

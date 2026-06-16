@@ -27,10 +27,10 @@ export function BalanceCard({ delay }: { delay?: number }) {
 
       {data && (
         <>
-          <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-fg">
             {data.balance_formatted}
           </p>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-muted">
             Total spent: {data.total_spent_formatted}
           </p>
         </>

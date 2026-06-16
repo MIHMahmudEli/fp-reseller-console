@@ -75,16 +75,16 @@ export function MetricsView({ planId }: { planId: string }) {
         <div>
           <Link
             href={`/plans/${planId}`}
-            className="inline-flex items-center gap-1 text-sm text-slate-500 transition-colors hover:text-slate-900"
+            className="inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-fg"
           >
             <ArrowLeft className="h-4 w-4" /> Back to plan
           </Link>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-fg">
             Performance metrics
           </h1>
-          {product && <p className="text-sm text-slate-500">{productLabel(product)} plan</p>}
+          {product && <p className="text-sm text-muted">{productLabel(product)} plan</p>}
         </div>
-        <div className="flex rounded-lg border border-slate-200 bg-white p-0.5 shadow-sm">
+        <div className="flex rounded-lg border border-border bg-surface p-0.5 shadow-sm">
           {RANGES.map((r) => (
             <button
               key={r.hours}
@@ -93,7 +93,7 @@ export function MetricsView({ planId }: { planId: string }) {
                 "rounded-md px-3 py-1.5 text-sm font-medium transition-all",
                 hours === r.hours
                   ? "bg-brand-600 text-white shadow-sm"
-                  : "text-slate-600 hover:bg-slate-50",
+                  : "text-muted hover:bg-subtle",
               )}
             >
               {r.label}
@@ -104,10 +104,10 @@ export function MetricsView({ planId }: { planId: string }) {
 
       {product && !metricsSupported(product) ? (
         <Card className="flex flex-col items-center p-12 text-center">
-          <p className="text-sm font-medium text-slate-700">
+          <p className="text-sm font-medium text-fg">
             Metrics aren&apos;t available for {productLabel(product)} plans
           </p>
-          <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500">
+          <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
             Detailed performance metrics are only collected for datacenter, shared
             ISP and IPv6 products.
           </p>
@@ -119,7 +119,7 @@ export function MetricsView({ planId }: { planId: string }) {
           <ChartCard title="Throughput (Mbps)" q={throughputQ} empty={!throughputQ.data?.series?.length} delay={60}>
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={throughputQ.data?.series ?? []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                 <XAxis dataKey="bucket" tickFormatter={tick} {...AXIS} />
                 <YAxis {...AXIS} axisLine={false} />
                 <Tooltip labelFormatter={(l) => tick(String(l))} contentStyle={tooltipStyle} />
@@ -133,7 +133,7 @@ export function MetricsView({ planId }: { planId: string }) {
           <ChartCard title="Connection duration (ms)" q={latencyQ} empty={!latencyQ.data?.series?.length} delay={80}>
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={latencyQ.data?.series ?? []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                 <XAxis dataKey="bucket" tickFormatter={tick} {...AXIS} />
                 <YAxis {...AXIS} axisLine={false} />
                 <Tooltip labelFormatter={(l) => tick(String(l))} contentStyle={tooltipStyle} />
@@ -159,7 +159,7 @@ export function MetricsView({ planId }: { planId: string }) {
             >
               <ResponsiveContainer width="100%" height={240}>
                 <AreaChart data={statusQ.data?.series ?? []}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis dataKey="bucket" tickFormatter={tick} {...AXIS} />
                   <YAxis {...AXIS} axisLine={false} />
                   <Tooltip labelFormatter={(l) => tick(String(l))} contentStyle={tooltipStyle} />
@@ -208,7 +208,7 @@ function ChartCard<T>({
 }) {
   return (
     <Card className="p-6" delay={delay}>
-      <h2 className="mb-4 text-sm font-medium text-slate-700">{title}</h2>
+      <h2 className="mb-4 text-sm font-medium text-fg">{title}</h2>
       {q.isLoading ? (
         <Skeleton className="h-[240px] w-full" />
       ) : q.isError ? (
@@ -216,10 +216,10 @@ function ChartCard<T>({
           {(q.error as Error)?.message ?? "Failed to load"}
         </p>
       ) : empty ? (
-        <div className="flex h-[200px] flex-col items-center justify-center gap-1.5 rounded-xl bg-slate-50 px-6 text-center">
-          <span className="text-sm text-slate-400">No data in this window</span>
+        <div className="flex h-[200px] flex-col items-center justify-center gap-1.5 rounded-xl bg-subtle px-6 text-center">
+          <span className="text-sm text-faint">No data in this window</span>
           {emptyHint && (
-            <span className="max-w-xs text-xs text-slate-400/80">{emptyHint}</span>
+            <span className="max-w-xs text-xs text-faint/80">{emptyHint}</span>
           )}
         </div>
       ) : (
@@ -245,8 +245,8 @@ function Summary({ q }: { q: QueryLike<MetricsSummary> }) {
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
       {cards.map((c, i) => (
         <Card key={c.label} className="p-4" delay={i * 40}>
-          <div className="text-xs uppercase tracking-wide text-slate-400">{c.label}</div>
-          <div className="mt-1 text-xl font-semibold tabular-nums text-slate-900">
+          <div className="text-xs uppercase tracking-wide text-faint">{c.label}</div>
+          <div className="mt-1 text-xl font-semibold tabular-nums text-fg">
             {q.isLoading ? "…" : c.value}
           </div>
         </Card>
@@ -276,18 +276,18 @@ function ErrorsChart({ q }: { q: QueryLike<TimeSeries<ErrorsPoint>> }) {
         {data.map((d) => (
           <li key={d.category} className="flex items-center gap-3">
             <span
-              className="w-32 shrink-0 truncate text-xs text-slate-500"
+              className="w-32 shrink-0 truncate text-xs text-muted"
               title={d.category}
             >
               {d.category}
             </span>
-            <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+            <div className="h-2 flex-1 overflow-hidden rounded-full bg-subtle">
               <div
                 className="h-full rounded-full bg-red-500 transition-all duration-500"
                 style={{ width: `${(d.count / max) * 100}%` }}
               />
             </div>
-            <span className="w-8 shrink-0 text-right text-xs font-medium tabular-nums text-slate-700">
+            <span className="w-8 shrink-0 text-right text-xs font-medium tabular-nums text-fg">
               {d.count}
             </span>
           </li>
@@ -303,7 +303,7 @@ function DestinationsTable({ q }: { q: QueryLike<{ destinations: Destination[] }
     <ChartCard title="Top destinations" q={q} empty={rows.length === 0} delay={140}>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="text-left text-xs uppercase tracking-wide text-slate-400">
+          <thead className="text-left text-xs uppercase tracking-wide text-faint">
             <tr>
               <th className="py-2 pr-4 font-medium">Destination</th>
               <th className="py-2 pr-4 font-medium">Conns</th>
@@ -313,10 +313,10 @@ function DestinationsTable({ q }: { q: QueryLike<{ destinations: Destination[] }
               <th className="py-2 font-medium">p95 ms</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border">
             {rows.map((d) => (
               <tr key={d.destination}>
-                <td className="py-2 pr-4 font-mono text-xs text-slate-700">{d.destination}</td>
+                <td className="py-2 pr-4 font-mono text-xs text-fg">{d.destination}</td>
                 <td className="py-2 pr-4 tabular-nums">{d.connections}</td>
                 <td className="py-2 pr-4 tabular-nums text-emerald-600">{d.successes}</td>
                 <td className="py-2 pr-4 tabular-nums text-red-600">{d.errors}</td>

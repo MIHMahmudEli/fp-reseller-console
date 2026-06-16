@@ -1,12 +1,21 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Brand accent (indigo/violet) */
+  /* Semantic colors (flip between light and the nebula dark theme) */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-subtle: var(--subtle);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-text: var(--accent-text);
+
+  /* Brand accent (indigo/violet) — same hue both themes */
   --color-brand-50: #eef2ff;
   --color-brand-100: #e0e7ff;
   --color-brand-200: #c7d2fe;
@@ -22,103 +31,102 @@
   --animate-scale-in: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Custom elevation utilities (support variants like hover:shadow-pop) */
-@utility shadow-soft {
-  box-shadow:
-    0 1px 2px rgb(15 23 42 / 0.04),
-    0 1px 3px rgb(15 23 42 / 0.06);
-}
-@utility shadow-card {
-  box-shadow:
-    0 1px 2px rgb(15 23 42 / 0.04),
-    0 4px 12px rgb(15 23 42 / 0.05);
-}
-@utility shadow-pop {
-  box-shadow:
-    0 10px 30px -10px rgb(15 23 42 / 0.18),
-    0 4px 12px rgb(15 23 42 / 0.08);
+/* Light theme */
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --subtle: #f3f5f9;
+  --border: #e2e8f0;
+  --fg: #0f172a;
+  --muted: #64748b;
+  --faint: #94a3b8;
+  --accent-soft: #eef2ff;
+  --accent-text: #4338ca;
 }
 
-:root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+/* Dark theme — deep-space nebula */
+.dark {
+  --bg: #07070f;
+  --surface: #14152e;
+  --subtle: #1b1c3a;
+  --border: #2b2d55;
+  --fg: #e7e9ff;
+  --muted: #a6abd9;
+  --faint: #7b80ad;
+  --accent-soft: color-mix(in oklab, #6366f1 18%, transparent);
+  --accent-text: #c7d2fe;
 }
 
 @keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-
 @keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
 }
-
 @keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
+  100% { transform: translateX(100%); }
 }
 
 body {
   background:
     radial-gradient(60rem 60rem at 110% -10%, var(--color-brand-50), transparent 55%),
     radial-gradient(50rem 50rem at -10% 0%, #f5f3ff, transparent 50%),
-    var(--background);
+    var(--bg);
   background-attachment: fixed;
-  color: var(--foreground);
+  color: var(--fg);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* Animation helpers (use inline animation-delay for stagger) */
-.animate-fade-in-up {
-  animation: var(--animate-fade-in-up);
+/* Nebula backdrop for dark mode: cool violet/blue/teal glows over near-black */
+.dark body {
+  background:
+    radial-gradient(42rem 42rem at 12% -8%, rgba(124, 58, 237, 0.28), transparent 60%),
+    radial-gradient(46rem 46rem at 108% 8%, rgba(37, 99, 235, 0.22), transparent 55%),
+    radial-gradient(38rem 38rem at 50% 118%, rgba(13, 148, 136, 0.16), transparent 60%),
+    radial-gradient(30rem 30rem at 85% 90%, rgba(168, 28, 175, 0.14), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
 }
-.animate-fade-in {
-  animation: var(--animate-fade-in);
+
+.animate-fade-in-up { animation: var(--animate-fade-in-up); }
+.animate-fade-in { animation: var(--animate-fade-in); }
+.animate-scale-in { animation: var(--animate-scale-in); }
+
+@utility shadow-soft {
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 1px 3px rgb(15 23 42 / 0.06);
 }
-.animate-scale-in {
-  animation: var(--animate-scale-in);
+@utility shadow-card {
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 12px rgb(15 23 42 / 0.05);
+}
+@utility shadow-pop {
+  box-shadow: 0 10px 30px -10px rgb(15 23 42 / 0.18), 0 4px 12px rgb(15 23 42 / 0.08);
+}
+/* In dark, lift cards with a subtle cool ring instead of invisible shadows */
+.dark .shadow-card {
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 8px 24px -12px rgb(0 0 0 / 0.6);
+}
+.dark .shadow-pop {
+  box-shadow: 0 0 0 1px rgb(124 58 237 / 0.25), 0 16px 40px -16px rgb(0 0 0 / 0.7);
 }
 
 /* Shimmer skeleton */
 .skeleton {
   position: relative;
   overflow: hidden;
-  background-color: rgb(226 232 240 / 0.7);
+  background-color: var(--subtle);
 }
 .skeleton::after {
   content: "";
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgb(255 255 255 / 0.6),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.18), transparent);
   animation: shimmer 1.5s infinite;
 }
 
@@ -126,28 +134,20 @@ body {
   background: var(--color-brand-100);
   color: var(--color-brand-700);
 }
+.dark ::selection {
+  background: rgb(99 102 241 / 0.35);
+  color: #fff;
+}
 
-/* Subtle, modern scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-color: var(--border) transparent;
 }
-*::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-*::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
-}
-*::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }

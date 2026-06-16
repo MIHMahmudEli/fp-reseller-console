@@ -7,8 +7,8 @@ const VARIANTS: Record<Variant, string> = {
   primary:
     "bg-brand-600 text-white shadow-sm hover:bg-brand-700 active:scale-[0.98]",
   secondary:
-    "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 active:scale-[0.98]",
-  ghost: "text-slate-600 hover:bg-slate-100",
+    "border border-border bg-surface text-fg hover:bg-subtle active:scale-[0.98]",
+  ghost: "text-muted hover:bg-subtle",
 };
 
 const SIZES: Record<Size, string> = {

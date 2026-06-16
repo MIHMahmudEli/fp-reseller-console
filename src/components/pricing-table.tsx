@@ -52,15 +52,15 @@ export function PricingTable({ delay }: { delay?: number }) {
             return (
               <div
                 key={product}
-                className="flex items-center justify-between rounded-xl border border-slate-100 px-3 py-2 transition-colors hover:bg-slate-50"
+                className="flex items-center justify-between rounded-xl border border-border px-3 py-2 transition-colors hover:bg-subtle"
               >
                 <div>
-                  <div className="text-sm font-medium text-slate-800">
+                  <div className="text-sm font-medium text-fg">
                     {productLabel(product)}
                   </div>
-                  <div className="text-xs text-slate-400">{kind}</div>
+                  <div className="text-xs text-faint">{kind}</div>
                 </div>
-                <div className="font-mono text-sm font-medium text-slate-900">{price}</div>
+                <div className="font-mono text-sm font-medium text-fg">{price}</div>
               </div>
             );
           })}

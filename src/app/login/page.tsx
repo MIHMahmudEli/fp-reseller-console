@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Lock, ShieldCheck, Zap } from "lucide-react";
 import { apiPost, ApiError } from "@/lib/fetcher";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -26,7 +27,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-10">
+    <div className="relative flex min-h-screen items-center justify-center px-4 py-10">
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-sm">
         <div className="animate-fade-in-up mb-8 text-center">
           <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-lg shadow-brand-500/30">
@@ -35,21 +39,21 @@ export default function LoginPage() {
           <h1 className="text-2xl font-semibold tracking-tight">
             FlashProxy Console
           </h1>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-muted">
             Sign in with your reseller API key.
           </p>
         </div>
 
         <form
           onSubmit={onSubmit}
-          className="animate-fade-in-up rounded-2xl border border-slate-200/70 bg-white p-6 shadow-sm"
+          className="animate-fade-in-up rounded-2xl border border-border/70 bg-surface p-6 shadow-sm"
           style={{ animationDelay: "80ms" }}
         >
-          <label htmlFor="apiKey" className="block text-sm font-medium text-slate-700">
+          <label htmlFor="apiKey" className="block text-sm font-medium text-fg">
             API key
           </label>
           <div className="relative mt-1.5">
-            <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Lock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint" />
             <input
               id="apiKey"
               type="password"
@@ -57,7 +61,7 @@ export default function LoginPage() {
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               placeholder="fp_live_…"
-              className="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 font-mono text-sm outline-none transition-shadow focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
+              className="w-full rounded-lg border border-border py-2 pl-9 pr-3 font-mono text-sm outline-none transition-shadow focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
               required
             />
           </div>
@@ -76,7 +80,7 @@ export default function LoginPage() {
             {loading ? "Verifying…" : "Sign in"}
           </Button>
 
-          <p className="mt-4 flex items-start gap-1.5 text-xs text-slate-400">
+          <p className="mt-4 flex items-start gap-1.5 text-xs text-faint">
             <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" />
             Your key is verified against the FlashProxy API and stored only in an
             encrypted, http-only session cookie. It never reaches the browser.

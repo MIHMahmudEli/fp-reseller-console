@@ -16,9 +16,9 @@ export function TransactionsTable({ delay }: { delay?: number }) {
 
   return (
     <Card delay={delay}>
-      <div className="flex items-center gap-2 border-b border-slate-200/70 px-5 py-3">
-        <Receipt className="h-4 w-4 text-slate-400" />
-        <h2 className="text-sm font-medium text-slate-500">Transactions</h2>
+      <div className="flex items-center gap-2 border-b border-border/70 px-5 py-3">
+        <Receipt className="h-4 w-4 text-faint" />
+        <h2 className="text-sm font-medium text-muted">Transactions</h2>
       </div>
 
       {isLoading ? (
@@ -33,20 +33,20 @@ export function TransactionsTable({ delay }: { delay?: number }) {
         </p>
       ) : (data?.length ?? 0) === 0 ? (
         <div className="flex flex-col items-center px-5 py-10 text-center">
-          <span className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+          <span className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-subtle text-faint">
             <Receipt className="h-5 w-5" />
           </span>
-          <p className="text-sm text-slate-400">No transactions yet</p>
+          <p className="text-sm text-faint">No transactions yet</p>
         </div>
       ) : (
-        <ul className="divide-y divide-slate-100">
+        <ul className="divide-y divide-border">
           {data!.map((t) => {
             const negative = t.amount_cents < 0;
             return (
               <li key={t.id} className="flex items-center gap-3 px-5 py-3">
                 <span
                   className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
-                    negative ? "bg-slate-100 text-slate-500" : "bg-emerald-50 text-emerald-600"
+                    negative ? "bg-subtle text-muted" : "bg-emerald-50 text-emerald-600"
                   }`}
                 >
                   {negative ? (
@@ -56,16 +56,16 @@ export function TransactionsTable({ delay }: { delay?: number }) {
                   )}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-slate-800">
+                  <div className="truncate text-sm font-medium text-fg">
                     {t.description}
                   </div>
-                  <div className="text-xs text-slate-400">
+                  <div className="text-xs text-faint">
                     {formatDate(t.created_at)} · {t.type}
                   </div>
                 </div>
                 <div
                   className={`shrink-0 text-sm font-semibold tabular-nums ${
-                    negative ? "text-slate-900" : "text-emerald-600"
+                    negative ? "text-fg" : "text-emerald-600"
                   }`}
                 >
                   {negative ? "-" : "+"}${Math.abs(t.amount_cents / 100).toFixed(2)}

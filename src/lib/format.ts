@@ -52,10 +52,10 @@ export function statusClasses(status: string): string {
       return "bg-emerald-50 text-emerald-700 ring-emerald-600/20";
     case "expired":
     case "cancelled":
-      return "bg-slate-100 text-slate-600 ring-slate-500/20";
+      return "bg-subtle text-muted ring-border";
     case "suspended":
       return "bg-amber-50 text-amber-700 ring-amber-600/20";
     default:
-      return "bg-slate-100 text-slate-600 ring-slate-500/20";
+      return "bg-subtle text-muted ring-border";
   }
 }

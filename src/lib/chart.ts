@@ -2,8 +2,10 @@
 
 export const tooltipStyle = {
   borderRadius: "0.75rem",
-  border: "1px solid rgb(226 232 240)",
-  boxShadow: "0 4px 12px rgb(0 0 0 / 0.06)",
+  border: "1px solid var(--border)",
+  background: "var(--surface)",
+  color: "var(--fg)",
+  boxShadow: "0 8px 24px -12px rgb(0 0 0 / 0.35)",
   fontSize: "0.8rem",
 } as const;
 
