@@ -93,6 +93,22 @@ Prisma 7 + Supabase Postgres · iron-session · Zod.
    Open http://localhost:3000 and log in with a reseller API key.
    The audit viewer is at http://localhost:3000/admin.
 
+## Deploy (Vercel)
+
+The app is serverless-friendly (Supabase pooled connection + Prisma driver
+adapter). To deploy:
+
+1. Push to GitHub and **import the repo** at [vercel.com/new](https://vercel.com/new).
+   Next.js is auto-detected; no custom build settings needed (`prisma generate`
+   runs via the `postinstall` script).
+2. Add the same **environment variables** as `.env` in the Vercel project
+   settings: `SESSION_SECRET`, `DATABASE_URL`, `DIRECT_URL`, `ADMIN_TOKEN`,
+   `FLASHPROXY_API_BASE_URL`.
+3. The database schema is managed with Prisma migrations — run
+   `npx prisma migrate deploy` against the production DB once (locally with the
+   prod `DIRECT_URL`, or as a one-off), since Vercel doesn't migrate on deploy.
+4. Deploy. The login page is the entry point; `/admin` is the operator view.
+
 ## API exploration scripts
 
 The `scripts/` folder holds the read-only probes used to learn the API before
