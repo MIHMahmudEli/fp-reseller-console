@@ -6,7 +6,6 @@ export async function GET() {
   if (!(await isAdmin())) return unauthorized();
 
   const resellers = await prisma.reseller.findMany({
-    orderBy: { lastSeenAt: "desc" },
     select: {
       id: true,
       label: true,
@@ -14,8 +13,22 @@ export async function GET() {
       firstSeenAt: true,
       lastSeenAt: true,
       _count: { select: { auditLogs: true } },
+      // Most recent audited action = true "last seen" (the row's lastSeenAt only
+      // updates on login, so it would otherwise never reflect ongoing activity).
+      auditLogs: {
+        select: { createdAt: true },
+        orderBy: { createdAt: "desc" },
+        take: 1,
+      },
     },
   });
 
-  return ok({ resellers });
+  const rows = resellers
+    .map(({ auditLogs, ...r }) => ({
+      ...r,
+      lastSeenAt: auditLogs[0]?.createdAt ?? r.lastSeenAt,
+    }))
+    .sort((a, b) => +new Date(b.lastSeenAt) - +new Date(a.lastSeenAt));
+
+  return ok({ resellers: rows });
 }
