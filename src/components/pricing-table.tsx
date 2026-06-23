@@ -26,6 +26,16 @@ function priceSummary(value: unknown): { price: string; kind: string } {
   if (bandwidth && typeof bandwidth.price_per_gb === "number") {
     return { price: `$${bandwidth.price_per_gb}/GB`, kind: type || "hybrid" };
   }
+  // Time-billed products (e.g. unlimited_residential) price by the day via tiers.
+  const tiers = v.pricing_tiers as Array<Record<string, unknown>> | undefined;
+  const tier = tiers?.find((t) => typeof t.price_per_day_cents === "number");
+  if (tier) {
+    const perDay = (tier.price_per_day_cents as number) / 100;
+    return { price: `$${perDay}/day`, kind: type || "time" };
+  }
+  if (typeof v.trial_price_formatted === "string") {
+    return { price: `${v.trial_price_formatted} trial`, kind: type || "time" };
+  }
   return { price: "—", kind: type || "custom" };
 }
 
