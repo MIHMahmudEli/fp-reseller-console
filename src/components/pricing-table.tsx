@@ -26,15 +26,16 @@ function priceSummary(value: unknown): { price: string; kind: string } {
   if (bandwidth && typeof bandwidth.price_per_gb === "number") {
     return { price: `$${bandwidth.price_per_gb}/GB`, kind: type || "hybrid" };
   }
-  // Time-billed products (e.g. unlimited_residential) price by the day via tiers.
-  const tiers = v.pricing_tiers as Array<Record<string, unknown>> | undefined;
-  const tier = tiers?.find((t) => typeof t.price_per_day_cents === "number");
-  if (tier) {
-    const perDay = (tier.price_per_day_cents as number) / 100;
-    return { price: `$${perDay}/day`, kind: type || "time" };
-  }
-  if (typeof v.trial_price_formatted === "string") {
-    return { price: `${v.trial_price_formatted} trial`, kind: type || "time" };
+  // Time-billed products (e.g. unlimited_residential) price per period, keyed by
+  // bandwidth (Mbps) then duration. Surface the cheapest day rate as a "from".
+  const basePrices = v.base_prices as Record<string, Record<string, number>> | undefined;
+  if (basePrices) {
+    const dayRates = Object.values(basePrices)
+      .map((d) => d?.["1_day"])
+      .filter((n): n is number => typeof n === "number");
+    if (dayRates.length > 0) {
+      return { price: `from $${Math.min(...dayRates)}/day`, kind: type || "time" };
+    }
   }
   return { price: "—", kind: type || "custom" };
 }
